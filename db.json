@@ -1,0 +1,29 @@
+{
+  "sports": [
+    {
+      "id": "1",
+      "name": "tenis",
+      "isColective": false
+    },
+    {
+      "id": "2",
+      "name": "futbol",
+      "isColective": true
+    },
+    {
+      "id": "3",
+      "name": "basket",
+      "isColective": true
+    },
+    {
+      "id": "4",
+      "name": "golf",
+      "isColective": false
+    },
+    {
+      "id": "5",
+      "name": "baseball",
+      "isColective": true
+    }
+  ]
+}

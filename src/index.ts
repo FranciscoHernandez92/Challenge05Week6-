@@ -9,10 +9,10 @@ const port = process.env.PORT ?? 3500;
 const server = createServer(app);
 server.listen(port);
 
-server.on('error', (error) => {
-  debug('error', error);
-  process.exit(1);
-});
+// S server.on('error', (error) => {
+//   debug('error', error);
+//   process.exit(1);
+// });
 
 server.on('listening', () => {
   debug(`Server  express is running in port ${port}`);
