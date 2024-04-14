@@ -10,6 +10,8 @@ export class SportController {
     const result = this.repo.readAll();
     res.json(result);
   }
+  // TIPAMOS LOS PARAMETOS REQUEST Y RESPONSE QUE SON DE EXPRESS
+  // PARA ACCEDER A LOS METODOS COMO JSON O SEND PARA DEVOLVER LO QUE QUEREMOS
 
   getById(req: Request, res: Response) {
     const { id } = req.params;

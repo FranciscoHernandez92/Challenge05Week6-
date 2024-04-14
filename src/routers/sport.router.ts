@@ -16,4 +16,5 @@ sportRouter.patch('/:id', sportController.update.bind(sportController));
 
 sportRouter.delete('/:id', sportController.delete.bind(sportController));
 
-// EJECUTAMOS EL CRUD A TRAVES DE CADA METODO Y LOS BINDEAMOS
+// DESPUES DE CADA METODO INDICAMOS LA URL QUE VAMOS A UTILIZAR PARA CADA METODO
+// EJECUTAMOS EL CRUD Y ACCEDEMOS A LOS METODOS DEL REPOSITORIO, LUEGO LO BINDEAMOS

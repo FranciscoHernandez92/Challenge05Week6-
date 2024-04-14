@@ -8,6 +8,8 @@ import createDebug from 'debug';
 
 const debug = createDebug('W6*:server');
 
+// ESTO ES COMO EL SERVICIO, CREAMOS UNA CLASE Y METEMOS TODOS LOS METODOS QUE VAMOS A UTILIZAR
+
 export class SportMemoryRepository {
   sports: Sport[] = [];
   constructor() {
@@ -54,7 +56,7 @@ export class SportMemoryRepository {
   create(data: SportCreateDto) {
     const newSport: Sport = {
       id: (this.sports.length + 1).toString(),
-      // CONVERTIMOS EL ID EN STRING PARA LUEGO ACCEDER A EL A TRAVES DE LA URL Y LE SUMAMOS UNO PARA QUE SEA EL SIGUIENTE
+      // CONVERTIMOS EL NUEVO ID EN STRING PARA LUEGO ACCEDER A EL A TRAVES DE LA URL Y LE SUMAMOS UNO PARA QUE SEA EL SIGUIENTE
       name: data.name,
       isColective: data.isColective,
     };
@@ -68,12 +70,15 @@ export class SportMemoryRepository {
     if (!sport) {
       throw new Error(` sport with id ${id} doesn't exist`);
     }
-    // METEMOS LA GUARDA PARA QUE ENVIE EL ERROR
+    // METEMOS LA GUARDA PARA QUE ENVIE EL ERROR SI NO ENCUENTRA EL ID INDICADO
 
     const newSport = { ...sport, ...data };
     this.sports = this.sports.map((item) =>
       item.id === id ? newSport : sport
     );
+    // AQUI ESTAMOS CREANDO UNA CONSTANTE QUE VA A SER LA ACTUALIZACION.
+    // PRIMERO DESESTRUCTURAMOS, MAPEAMOS PARA ENCONTRAR EL ID, SI EL ID COINCIDE ENVIAMOS EL NUEVO OBJETO ACTUALIZADO
+    // SI EL ID NO COINCIDE ENVIAMOS EL OBJETO TAL CUAL SIN CAMBIOS
     this.saveDataBase();
     return newSport;
   }
@@ -85,6 +90,7 @@ export class SportMemoryRepository {
     }
 
     this.sports = this.sports.filter((item) => item.id !== id);
+    // CON FILTER CREAMOS UN NUEVO ARRAY CON TODOS LOS ITEMS QUE NO COINCIDAN CON EL ID INDICADO, QUE ES EL BORRADO
     this.saveDataBase();
     return sport;
   }
