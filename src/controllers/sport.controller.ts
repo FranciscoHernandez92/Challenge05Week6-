@@ -1,44 +1,93 @@
-import { type Request, type Response } from 'express';
-import { type SportMemoryRepository } from '../repositories/sport.inmemory.repo.js';
-import { type Sport } from '../entities/sport.js';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { type NextFunction, type Request, type Response } from 'express';
+import { type SportFsRepository } from '../repositories/sport.fs.repo.js';
+import createDebug from 'debug';
+import { HttpError } from '../middleware/errors.middleware.js';
+import { type Sport, type SportCreateDto } from '../entities/sport.js';
+import {
+  sportCreateDtoSchema,
+  sportUpdateDtoSchema,
+} from '../entities/sport.schema.js';
+
+const debug = createDebug('W6:controller');
 
 export class SportController {
-  constructor(private readonly repo: SportMemoryRepository) {}
-  // INYECTAMOS EL REPO COMO EN ANGULAR Y ES READONLY PORQUE SOLAMENTE LO LEEMOS
-
-  getAll(_req: Request, res: Response) {
-    const result = this.repo.readAll();
-    res.json(result);
+  constructor(private readonly repo: SportFsRepository) {
+    debug('instantiated controller');
   }
-  // TIPAMOS LOS PARAMETOS REQUEST Y RESPONSE QUE SON DE EXPRESS
-  // PARA ACCEDER A LOS METODOS COMO JSON O SEND PARA DEVOLVER LO QUE QUEREMOS
 
-  getById(req: Request, res: Response) {
+  async getAll(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.repo.readAll();
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const result = this.repo.readById(id);
-    res.json(result);
+
+    try {
+      const result = await this.repo.readById(id);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
 
-  create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next: NextFunction) {
     const data = req.body as Sport;
-    const result = this.repo.create(data);
-    res.status(201);
-    // INDICAMOS EL STATUS PARA INFORMAR QUE TODO SE CREO CORRECTAMENTE
-    res.json(result);
+
+    const {
+      error,
+
+      value,
+    }: { error: Error | undefined; value: SportCreateDto } =
+      sportCreateDtoSchema.validate(data, { abortEarly: false });
+    if (error) {
+      next(new HttpError(406, 'Not Acceptable', error.message));
+      return;
+    }
+
+    try {
+      const result = await this.repo.create(data);
+      res.status(201);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
 
-  update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const data = req.body as Sport;
-    const result = this.repo.update(id, data);
-    res.status(202);
-    // INDICO EL STATUS 202 COMO QUE LA ACTUALIZACION FUE ACEPTADA O PUEDE SER TAMBIEN EL STATUS 205 DE RESETEO
-    res.json(result);
+    const { error } = sportUpdateDtoSchema.validate(data, {
+      abortEarly: false,
+    });
+    if (error) {
+      next(new HttpError(406, 'Not Acceptable', error.message));
+      return;
+    }
+
+    try {
+      const result = await this.repo.update(id, data);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
 
-  delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const result = this.repo.delete(id);
-    res.json(result);
+
+    try {
+      const result = await this.repo.delete(id);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
 }
