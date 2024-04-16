@@ -1,15 +1,25 @@
 import { createServer } from 'http';
 import 'dotenv/config';
-import { createApp } from './app.js';
+import { createApp, startApp } from './app.js';
 import createDebug from 'debug';
+import { dbConnect } from './tools/db.connect.js';
 
 const debug = createDebug('W6*:server');
 debug('starting server');
 const port = process.env.PORT ?? 3500;
-// FIJAMOS EL PUERTO A TRAVES DE SCRIPTS CON EL OBJETO PROCESS (PACKAGE.JSON) PERO ES INNECESARIO
-const server = createServer(createApp());
-// MONTAMOS EL SERVER
-server.listen(port);
+
+const app = createApp();
+const server = createServer(app);
+
+dbConnect()
+  .then((prisma) => {
+    startApp(app, prisma);
+    server.listen(port);
+  })
+  .catch((error) => {
+    server.emit('error', error);
+  });
+
 server.on('error', (error) => {
   debug('error:', error);
   process.exit(1);

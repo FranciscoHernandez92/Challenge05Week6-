@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Sport {
+  id String @id @default(cuid())
+  name String 
+  isColective Boolean @default(false)
+  createAd DateTime @default(now())
+  updateAd DateTime @updatedAt
+  // ESTAS DOS ULTIMAS SIEMPRE TIENEN QUE ESTAR EN EL MODELO
+}
+
+model Country {
+  id String @id @default(cuid())
+  name String 
+  population Int
+  createAd DateTime @default(now())
+  updateAd DateTime @updatedAt
+}

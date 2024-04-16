@@ -1,5 +1,5 @@
 import { Router as createRouter } from 'express';
-import { type SportController } from '../controllers/sport.controller.js';
+import { type SportController } from '../../controllers/sports.controllers/sport.controller.js';
 import createDebug from 'debug';
 
 const debug = createDebug('W6*:router');

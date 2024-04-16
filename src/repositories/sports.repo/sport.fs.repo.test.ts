@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
-import { HttpError } from '../middleware/errors.middleware';
+import { HttpError } from '../../middleware/errors.middleware';
 import { SportFsRepository } from './sport.fs.repo';
-import { type SportUpdateDto, type SportCreateDto } from '../entities/sport';
+import { type SportCreateDto } from '../../entities/sports/sport';
 
 jest.mock('fs/promises');
 

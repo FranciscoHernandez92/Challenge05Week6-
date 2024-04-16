@@ -1,4 +1,4 @@
-import { type SportController } from '../controllers/sport.controller';
+import { type SportController } from '../../controllers/sports.controllers/sport.controller';
 import { SportRouter } from './sport.router';
 
 describe('Given a instance of the class ArticlesRouter', () => {

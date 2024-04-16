@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
-import { HttpError } from '../middleware/errors.middleware';
+import { HttpError } from '../../middleware/errors.middleware';
+import { type SportSqlRepository } from '../../repositories/sports.repo/sports.sql.repo';
 import { SportController } from './sport.controller';
-import { type SportFsRepository } from '../repositories/sport.fs.repo';
 
 describe('Given a instance of the class SportController', () => {
   const repo = {
@@ -10,7 +10,7 @@ describe('Given a instance of the class SportController', () => {
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
-  } as unknown as SportFsRepository;
+  } as unknown as SportSqlRepository;
 
   const req = {} as unknown as Request;
   const res = {

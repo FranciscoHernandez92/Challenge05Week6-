@@ -1,21 +1,22 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { type NextFunction, type Request, type Response } from 'express';
-import { type SportFsRepository } from '../repositories/sport.fs.repo.js';
 import createDebug from 'debug';
-import { HttpError } from '../middleware/errors.middleware.js';
-import { type Sport, type SportCreateDto } from '../entities/sport.js';
+import { type CountrySqlRepository } from '../../repositories/countries.repo/countries.sql.repo';
+import { type NextFunction, type Request, type Response } from 'express';
 import {
-  sportCreateDtoSchema,
-  sportUpdateDtoSchema,
-} from '../entities/sport.schema.js';
+  type Country,
+  type CountryCreateDto,
+} from '../../entities/countries/countries';
+import { HttpError } from '../../middleware/errors.middleware.js';
+import {
+  countryCreateDtoSchema,
+  countryUpdateDtoSchema,
+} from '../../entities/countries/countries.schema.js';
 
-const debug = createDebug('W6:controller');
+const debug = createDebug('W6:country controller');
 
-export class SportController {
-  constructor(private readonly repo: SportFsRepository) {
-    debug('instantiated controller');
+export class CountryController {
+  constructor(private readonly repo: CountrySqlRepository) {
+    debug('instantiated country controller');
   }
 
   async getAll(_req: Request, res: Response, next: NextFunction) {
@@ -39,14 +40,14 @@ export class SportController {
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
-    const data = req.body as Sport;
+    const data = req.body as Country;
 
     const {
       error,
 
       value,
-    }: { error: Error | undefined; value: SportCreateDto } =
-      sportCreateDtoSchema.validate(data, { abortEarly: false });
+    }: { error: Error | undefined; value: CountryCreateDto } =
+      countryCreateDtoSchema.validate(data, { abortEarly: false });
     if (error) {
       next(new HttpError(406, 'Not Acceptable', error.message));
       return;
@@ -63,8 +64,8 @@ export class SportController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const data = req.body as Sport;
-    const { error } = sportUpdateDtoSchema.validate(data, {
+    const data = req.body as Country;
+    const { error } = countryUpdateDtoSchema.validate(data, {
       abortEarly: false,
     });
     if (error) {

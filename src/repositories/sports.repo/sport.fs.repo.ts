@@ -3,10 +3,10 @@ import {
   type SportCreateDto,
   type SportUpdateDto,
   type Sport,
-} from '../entities/sport.js';
+} from '../../entities/sports/sport.js';
 import createDebug from 'debug';
 import { readFile, writeFile } from 'fs/promises';
-import { HttpError } from '../middleware/errors.middleware.js';
+import { HttpError } from '../../middleware/errors.middleware.js';
 
 const debug = createDebug('W6*:server');
 
