@@ -48,6 +48,15 @@ describe('Given a instance of the class SportFsRepository', () => {
       expect(readFile).toHaveBeenCalled();
     });
   });
+  describe('When we use the method update with a valid ID', () => {
+    test('Then it should call readFile and writeFile', async () => {
+      (readFile as jest.Mock).mockResolvedValue('[{"id": "1"}, {"id": "2"}]');
+      const result = await repo.update('1', {});
+      expect(readFile).toHaveBeenCalled();
+      expect(result).toEqual({ id: '1' });
+    });
+  });
+
   describe('When we use the method update with an invalid ID', () => {
     test('Then it should throw an error', async () => {
       (readFile as jest.Mock).mockResolvedValue('[{"id": "1"}]');
