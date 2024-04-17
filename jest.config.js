@@ -19,6 +19,8 @@ const config = {
   coverageDirectory: 'coverage',
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
+    'fs',
+    'type.repo.ts',
     'index.ts',
     'entities',
     'interface',

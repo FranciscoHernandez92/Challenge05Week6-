@@ -1,13 +1,13 @@
 import { Router as createRouter } from 'express';
-import { type SportController } from '../../controllers/sports.controllers/sport.controller.js';
+import { type BookController } from '../../controllers/books.controllers/books.controller.js';
 import createDebug from 'debug';
 
 const debug = createDebug('W6*:router');
 
-export class SportRouter {
+export class BookRouter {
   router = createRouter();
-  constructor(private readonly controller: SportController) {
-    debug('instantiated sport router');
+  constructor(private readonly controller: BookController) {
+    debug('instantiated book router');
     this.router.get('/', controller.getAll.bind(controller));
     this.router.get('/:id', controller.getById.bind(controller));
     this.router.post('/', controller.create.bind(controller));

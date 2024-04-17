@@ -1,16 +1,17 @@
 import { HttpError } from '../../middleware/errors.middleware';
-import { type CountrySqlRepository } from '../../repositories/countries.repo/countries.sql.repo';
-import { CountryController } from './countries.controller';
-import { type Request, type Response } from 'express';
 
-describe('Given a instance of the class CountryController', () => {
+import { type Request, type Response } from 'express';
+import { type AuthorSqlRepository } from '../../repositories/authors.repo/authors.sql.repo';
+import { AuthorController } from './authors.controller';
+
+describe('Given a instance of the class AuthorController', () => {
   const repo = {
     readAll: jest.fn(),
     readById: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
-  } as unknown as CountrySqlRepository;
+  } as unknown as AuthorSqlRepository;
 
   const req = {} as unknown as Request;
   const res = {
@@ -19,9 +20,9 @@ describe('Given a instance of the class CountryController', () => {
   } as unknown as Response;
   const next = jest.fn();
 
-  const controller = new CountryController(repo);
+  const controller = new AuthorController(repo);
   test('Then it should be instance of the class', () => {
-    expect(controller).toBeInstanceOf(CountryController);
+    expect(controller).toBeInstanceOf(AuthorController);
   });
 
   describe('When we use the method getAll', () => {
@@ -66,21 +67,25 @@ describe('Given a instance of the class CountryController', () => {
 
   describe('When we use the method create', () => {
     test('Then it should call repo.create', async () => {
-      const country = { name: 'title', population: 2 };
-      const validateCountry = { ...country };
-      req.body = country;
-      (repo.create as jest.Mock).mockResolvedValue(country);
+      const author = {
+        name: 'title',
+        nacionality: 'nacionality',
+        email: 'email',
+        birthDate: new Date(),
+      };
+      req.body = author;
+      (repo.create as jest.Mock).mockResolvedValue(author);
       await controller.create(req, res, next);
-      expect(repo.create).toHaveBeenCalledWith(validateCountry);
+      expect(repo.create).toHaveBeenCalledWith(author);
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith(country);
+      expect(res.json).toHaveBeenCalledWith(author);
     });
   });
 
   describe('When we use the method create with INVALID data', () => {
     test('Then it should call next with an error', async () => {
-      const country = { name: 'title' };
-      req.body = country;
+      const author = { name: 'title' };
+      req.body = author;
       await controller.create(req, res, next);
       expect(next).toHaveBeenCalledWith(
         new HttpError(406, 'Not Acceptable', 'Something went wrong')
@@ -92,8 +97,8 @@ describe('Given a instance of the class CountryController', () => {
     test('Then it should call repo.create and next', async () => {
       const error = new Error('Something went wrong');
       (repo.create as jest.Mock).mockRejectedValue(error);
-      const country = { name: 'title', population: 2 };
-      req.body = country;
+      const author = { name: 'title', email: 2 };
+      req.body = author;
       await controller.create(req, res, next);
       expect(next).toHaveBeenCalledWith(error);
     });
@@ -101,20 +106,20 @@ describe('Given a instance of the class CountryController', () => {
 
   describe('When we use the method update', () => {
     test('Then it should call repo.update', async () => {
-      const country = { name: 'title', population: 2 };
+      const author = { name: 'title', email: 'email' };
       req.params = { id: '1' };
-      req.body = country;
-      (repo.update as jest.Mock).mockResolvedValue(country);
+      req.body = author;
+      (repo.update as jest.Mock).mockResolvedValue(author);
       await controller.update(req, res, next);
-      expect(repo.update).toHaveBeenCalledWith('1', country);
-      expect(res.json).toHaveBeenCalledWith(country);
+      expect(repo.update).toHaveBeenCalledWith('1', author);
+      expect(res.json).toHaveBeenCalledWith(author);
     });
   });
 
   describe('When we use the method update with INVALID data', () => {
     test('Then it should call next with an error', async () => {
-      const country = { name: 34 };
-      req.body = country;
+      const author = { name: 34 };
+      req.body = author;
       await controller.update(req, res, next);
       expect(next).toHaveBeenCalledWith(
         new HttpError(406, 'Not Acceptable', 'Something went wrong')
@@ -126,8 +131,8 @@ describe('Given a instance of the class CountryController', () => {
     test('Then it should call repo.update and next', async () => {
       const error = new Error('Something went wrong');
       (repo.update as jest.Mock).mockRejectedValue(error);
-      const country = { name: 'title', population: 2 };
-      req.body = country;
+      const author = { name: 'title', email: 2 };
+      req.body = author;
       await controller.update(req, res, next);
       expect(next).toHaveBeenCalledWith(error);
     });

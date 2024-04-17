@@ -13,20 +13,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model Sport {
-  id String @id @default(cuid())
-  name String 
-  isColective Boolean @default(false)
-  createAd DateTime @default(now())
-  updateAd DateTime @updatedAt
+model Book {
+  id             String   @id @default(cuid())
+  name           String
+  author         Author   @relation(fields: [authorId], references: [id])
+  authorId       String
+  category       String
+  isPartOfSeries Boolean  @default(false)
+  createAd       DateTime @default(now())
+  updateAd       DateTime @updatedAt
   // ESTAS DOS ULTIMAS SIEMPRE TIENEN QUE ESTAR EN EL MODELO
 }
 
-model Country {
-  id String @id @default(cuid())
-  name String 
-  population Int
-  createAd DateTime @default(now())
-  updateAd DateTime @updatedAt
+model Author {
+  id          String   @id @default(cuid())
+  name        String
+  birthDate   DateTime
+  email       String
+  nacionality String
+  createAd    DateTime @default(now())
+  updateAd    DateTime @updatedAt
+  Book        Book[]
 }
+
+// ESTO SON LOS MODELOS DE ALEJANDRO PARA EXPLICAR LAS RELACIONES 
+
+// model Article {
+//   id          String   @id @default(cuid())
+//   title       String   
+//   author      User     @relation(fields:[authorId], references:[id]) ---> PRIMERA RELACION EN EL MODELO ARTICLE CON EL MODELO USER
+//   content     String
+//   isPublished Boolean  @default(false)
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
+// CUANDO YA TENEMOS LA PRIMERA RELACION EN EL MODELO TENEMOS QUE AÑADIR OTRA RELACION EN EL OTRO MODELO PARA COMPLETAR LA RELACION
+// O TAMBIEN PUEDES EJECUTAR npx prisma format Y PRISMA AUTOMATICAMENTE TE AÑADE UN CAMPO DIRECTAMENTE 
+
+// model User {
+//   id        String   @id @default(cuid())
+//   email     String   @unique
+//   name      String
+//   password  String
+//   birthDate DateTime
+//   role      Role     @default(user)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// enum Role {
+//   user
+//   admin
+//   guest
+// }

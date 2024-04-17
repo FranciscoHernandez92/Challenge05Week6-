@@ -1,15 +1,15 @@
 import express, { type Express } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import { SportController } from './controllers/sports.controllers/sport.controller.js';
-import { SportRouter } from './routers/sports.routers/sport.router.js';
 import { ErrorsMiddleware } from './middleware/errors.middleware.js';
 import { type PrismaClient } from '@prisma/client';
 import createDebug from 'debug';
-import { SportSqlRepository } from './repositories/sports.repo/sports.sql.repo.js';
-import { CountrySqlRepository } from './repositories/countries.repo/countries.sql.repo.js';
-import { CountryController } from './controllers/countries.controllers/countries.controller.js';
-import { CountryRouter } from './routers/countries.routers/countries.router.js';
+import { AuthorSqlRepository } from './repositories/authors.repo/authors.sql.repo.js';
+import { AuthorController } from './controllers/authors.controllers/authors.controller.js';
+import { AuthorRouter } from './routers/authors.routers/authors.router.js';
+import { BookSqlRepository } from './repositories/books.repo/books.sql.repo.js';
+import { BookController } from './controllers/books.controllers/books.controller.js';
+import { BookRouter } from './routers/books.routers/books.router.js';
 
 const debug = createDebug('W6*:app');
 
@@ -30,16 +30,19 @@ export const startApp = (app: Express, prisma: PrismaClient) => {
   app.use(express.static('public'));
   // ACCEDE A LA CARPETA CON EL NOMBRE INDICADO Y LA USA DIRECTAMENTE
 
-  const sportsRepo = new SportSqlRepository(prisma);
-  const sportsController = new SportController(sportsRepo);
-  const sportsRouter = new SportRouter(sportsController);
-  app.use('/sports', sportsRouter.router);
+  const authorsRepo = new AuthorSqlRepository(prisma);
+  // CREAMOS UN REPOSITORIO Y LE PASAMOS EL PARAMETRO QUE ESPERA(QUE ES EL QUE ESPERA TAMBIEN LA FUNCION)
+  const authorsController = new AuthorController(authorsRepo);
+  // CREAMOS UN CONTROLLER Y LE PASAMOS EL PARAMETRO QUE ESPERA(EL REPOSITORIO)
+  const authorsRouter = new AuthorRouter(authorsController);
+  // CREAMOS Un ROUTER Y LE PASAMOS EL PARAMETRO QUE ESPERA(EL CONTROLLER)
+  app.use('/authors', authorsRouter.router);
   // A TRAVES DEL METODO INDICAMOS LA URL Y CON EL SPORTROUTER ACCEDEMOS A LAS DISTINTAS URL QUE VAMOS A UTILIZAR
 
-  const countriesRepo = new CountrySqlRepository(prisma);
-  const countriesController = new CountryController(countriesRepo);
-  const countriesRouter = new CountryRouter(countriesController);
-  app.use('/countries', countriesRouter.router);
+  const booksRepo = new BookSqlRepository(prisma);
+  const booksController = new BookController(booksRepo);
+  const booksRouter = new BookRouter(booksController);
+  app.use('/books', booksRouter.router);
 
   const errorsMiddleware = new ErrorsMiddleware();
   app.use(errorsMiddleware.handle.bind(errorsMiddleware));

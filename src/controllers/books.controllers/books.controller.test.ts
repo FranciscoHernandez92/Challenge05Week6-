@@ -1,16 +1,16 @@
 import { type Request, type Response } from 'express';
 import { HttpError } from '../../middleware/errors.middleware';
-import { type SportSqlRepository } from '../../repositories/sports.repo/sports.sql.repo';
-import { SportController } from './sport.controller';
+import { type BookSqlRepository } from '../../repositories/books.repo/books.sql.repo';
+import { BookController } from './books.controller';
 
-describe('Given a instance of the class SportController', () => {
+describe('Given a instance of the class BookController', () => {
   const repo = {
     readAll: jest.fn(),
     readById: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
-  } as unknown as SportSqlRepository;
+  } as unknown as BookSqlRepository;
 
   const req = {} as unknown as Request;
   const res = {
@@ -19,9 +19,9 @@ describe('Given a instance of the class SportController', () => {
   } as unknown as Response;
   const next = jest.fn();
 
-  const controller = new SportController(repo);
+  const controller = new BookController(repo);
   test('Then it should be instance of the class', () => {
-    expect(controller).toBeInstanceOf(SportController);
+    expect(controller).toBeInstanceOf(BookController);
   });
 
   describe('When we use the method getAll', () => {
@@ -66,21 +66,25 @@ describe('Given a instance of the class SportController', () => {
 
   describe('When we use the method create', () => {
     test('Then it should call repo.create', async () => {
-      const sport = { name: 'title', isColective: true };
-      const validateSport = { ...sport };
-      req.body = sport;
-      (repo.create as jest.Mock).mockResolvedValue(sport);
+      const book = {
+        name: 'title',
+        category: 'title',
+        isPartOfSeries: false,
+        authorId: 'author',
+      };
+      req.body = book;
+      (repo.create as jest.Mock).mockResolvedValue(book);
       await controller.create(req, res, next);
-      expect(repo.create).toHaveBeenCalledWith(validateSport);
+      expect(repo.create).toHaveBeenCalledWith(book);
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith(sport);
+      expect(res.json).toHaveBeenCalledWith(book);
     });
   });
 
   describe('When we use the method create with INVALID data', () => {
     test('Then it should call next with an error', async () => {
-      const sport = { name: 'title' };
-      req.body = sport;
+      const book = { name: 'title' };
+      req.body = book;
       await controller.create(req, res, next);
       expect(next).toHaveBeenCalledWith(
         new HttpError(406, 'Not Acceptable', 'Something went wrong')
@@ -92,8 +96,8 @@ describe('Given a instance of the class SportController', () => {
     test('Then it should call repo.create and next', async () => {
       const error = new Error('Something went wrong');
       (repo.create as jest.Mock).mockRejectedValue(error);
-      const sport = { name: 'title', isColective: true };
-      req.body = sport;
+      const book = { name: 'title', category: 'title' };
+      req.body = book;
       await controller.create(req, res, next);
       expect(next).toHaveBeenCalledWith(error);
     });
@@ -101,20 +105,20 @@ describe('Given a instance of the class SportController', () => {
 
   describe('When we use the method update', () => {
     test('Then it should call repo.update', async () => {
-      const sport = { name: 'title', isColective: true };
+      const book = { name: 'title', category: 'title' };
       req.params = { id: '1' };
-      req.body = sport;
-      (repo.update as jest.Mock).mockResolvedValue(sport);
+      req.body = book;
+      (repo.update as jest.Mock).mockResolvedValue(book);
       await controller.update(req, res, next);
-      expect(repo.update).toHaveBeenCalledWith('1', sport);
-      expect(res.json).toHaveBeenCalledWith(sport);
+      expect(repo.update).toHaveBeenCalledWith('1', book);
+      expect(res.json).toHaveBeenCalledWith(book);
     });
   });
 
   describe('When we use the method update with INVALID data', () => {
     test('Then it should call next with an error', async () => {
-      const sport = { name: 34 };
-      req.body = sport;
+      const book = { name: 34 };
+      req.body = book;
       await controller.update(req, res, next);
       expect(next).toHaveBeenCalledWith(
         new HttpError(406, 'Not Acceptable', 'Something went wrong')
@@ -126,8 +130,8 @@ describe('Given a instance of the class SportController', () => {
     test('Then it should call repo.update and next', async () => {
       const error = new Error('Something went wrong');
       (repo.update as jest.Mock).mockRejectedValue(error);
-      const sport = { name: 'title', isColective: true };
-      req.body = sport;
+      const book = { name: 'title', category: 1 };
+      req.body = book;
       await controller.update(req, res, next);
       expect(next).toHaveBeenCalledWith(error);
     });
