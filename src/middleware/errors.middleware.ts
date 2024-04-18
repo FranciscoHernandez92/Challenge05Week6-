@@ -1,7 +1,7 @@
 import createDebug from 'debug';
 import { type NextFunction, type Request, type Response } from 'express';
 
-const debug = createDebug('W6*:router');
+const debug = createDebug('W6*:middleware');
 
 export class HttpError extends Error {
   constructor(

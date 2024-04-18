@@ -27,15 +27,15 @@ model Book {
 
 model Author {
   id          String   @id @default(cuid())
-  name        String
+  name        String   
   birthDate   DateTime
-  email       String
+  email       String   @unique //EL UNICO QUIERE DECIR QUE NO PUEDE COINCIDIR Y ES LO QUE VAMOS A UTILIZAR PARA VALIDAR EL LOGIN
   password    String
   nacionality String
   role        Role      @default(user)
   createAd    DateTime @default(now())
   updateAd    DateTime @updatedAt
-  Book        Book[]
+  book        Book[]
 }
 
 enum Role {

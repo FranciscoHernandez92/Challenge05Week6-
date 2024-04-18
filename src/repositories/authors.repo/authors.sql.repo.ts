@@ -1,7 +1,7 @@
 import { type PrismaClient } from '@prisma/client';
 import createDebug from 'debug';
 import { HttpError } from '../../middleware/errors.middleware.js';
-import { type Repo } from '../type.repo.js';
+import { type WithLoginRepo } from '../type.repo.js';
 import {
   type AuthorCreateDto,
   type Author,
@@ -16,7 +16,7 @@ const select = {
   email: true,
   nacionality: true,
   role: true,
-  books: {
+  book: {
     select: {
       id: true,
       name: true,
@@ -28,7 +28,7 @@ const select = {
 };
 
 export class AuthorSqlRepository
-  implements Repo<Omit<Author, 'password'>, AuthorCreateDto>
+  implements WithLoginRepo<Author, AuthorCreateDto>
 {
   constructor(private readonly prisma: PrismaClient) {
     debug(' author sql repository');
@@ -53,6 +53,43 @@ export class AuthorSqlRepository
     // EN VEZ DE ESTE IF PODEMOS UTILIZAR EL METODO .findUniqueOrThrow()
 
     return author;
+  }
+
+  // Aasync find(key: string, value: unknown) {
+  //   return this.prisma.author.findMany({
+  //     where: {
+  //       [key]: value,
+  //     },
+  //     select,
+  //   });
+  // ESTE METODO VA A RECIBIR DOS PARAMETROS Y CON EL METODO FINDMANY BUSCA LOS QUE COINCIDAN
+  // }
+
+  async searchForLogin(key: 'email' | 'name', value: 'string') {
+    if (!['email', 'name'].includes(key)) {
+      throw new HttpError(404, 'Not Found', `Invalid query parametters`);
+    }
+
+    // CREAMOS UN METODO PARA HACER EL LOGIN QUE VA A RECIBIR DOS PARAMETROS, NOSOTROS INDICAMOS QUE EL PRIMER PARAMETRO KEY COINCIDA CON EMAIL O EL NAME Y EL OTRO VA A SER LA CONTRASEÑA
+    // HACEMOS LA GUARDA
+    const authorData = await this.prisma.author.findFirst({
+      where: {
+        [key]: value,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        password: true,
+      },
+    });
+
+    if (!authorData) {
+      throw new HttpError(404, 'Not Found', `Invalid ${key} or password`);
+    }
+
+    return authorData;
   }
 
   async create(data: AuthorCreateDto) {

@@ -72,6 +72,7 @@ describe('Given a instance of the class AuthorController', () => {
         nacionality: 'nacionality',
         email: 'email',
         birthDate: new Date(),
+        password: 'password',
       };
       req.body = author;
       (repo.create as jest.Mock).mockResolvedValue(author);

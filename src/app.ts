@@ -10,6 +10,7 @@ import { AuthorRouter } from './routers/authors.routers/authors.router.js';
 import { BookSqlRepository } from './repositories/books.repo/books.sql.repo.js';
 import { BookController } from './controllers/books.controllers/books.controller.js';
 import { BookRouter } from './routers/books.routers/books.router.js';
+import { AuthInterceptor } from './middleware/auth.interceptor.js';
 
 const debug = createDebug('W6*:app');
 
@@ -30,18 +31,20 @@ export const startApp = (app: Express, prisma: PrismaClient) => {
   app.use(express.static('public'));
   // ACCEDE A LA CARPETA CON EL NOMBRE INDICADO Y LA USA DIRECTAMENTE
 
+  const authInterceptor = new AuthInterceptor();
+
   const authorsRepo = new AuthorSqlRepository(prisma);
   // CREAMOS UN REPOSITORIO Y LE PASAMOS EL PARAMETRO QUE ESPERA(QUE ES EL QUE ESPERA TAMBIEN LA FUNCION)
   const authorsController = new AuthorController(authorsRepo);
   // CREAMOS UN CONTROLLER Y LE PASAMOS EL PARAMETRO QUE ESPERA(EL REPOSITORIO)
-  const authorsRouter = new AuthorRouter(authorsController);
+  const authorsRouter = new AuthorRouter(authorsController, authInterceptor);
   // CREAMOS Un ROUTER Y LE PASAMOS EL PARAMETRO QUE ESPERA(EL CONTROLLER)
   app.use('/authors', authorsRouter.router);
   // A TRAVES DEL METODO INDICAMOS LA URL Y CON EL SPORTROUTER ACCEDEMOS A LAS DISTINTAS URL QUE VAMOS A UTILIZAR
 
   const booksRepo = new BookSqlRepository(prisma);
   const booksController = new BookController(booksRepo);
-  const booksRouter = new BookRouter(booksController);
+  const booksRouter = new BookRouter(booksController, authInterceptor);
   app.use('/books', booksRouter.router);
 
   const errorsMiddleware = new ErrorsMiddleware();

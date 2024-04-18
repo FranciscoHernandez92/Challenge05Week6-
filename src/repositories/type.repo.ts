@@ -6,7 +6,17 @@ export type Repo<T, C> = {
   delete(id: string): Promise<T>;
 };
 
-// ESTO ES UN TIPO GENERICO QUE VAMOS A USAR EN LOS REPOSITORIOS DE CADA ENDPOINT
+// ESTO ES UN TIPO DE REPO GENERICO QUE VAMOS A USAR EN LOS REPOSITORIOS DE CADA ENDPOINT
 // LOS DOS PARAMETOS SON GENERICOS
 // T = TIPO
 // C = CREATE
+
+// export type RepoLogin<T, C> = Repo<T, C> & {
+//   find(data:C)
+// }
+
+export type WithLoginRepo<T, C> = Repo<T, C> & {
+  searchForLogin(key: 'email' | 'name', value: string): Promise<Partial<T>>;
+};
+
+// CREAMOS UN TIPO GENERICO PARA IMPLEMENTARLO DONDE VAYAMOS A USAR ESE METODO MAS LOS ANTERIORES

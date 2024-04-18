@@ -6,9 +6,10 @@ export type Author = {
   birthDate: Date;
   nacionality: string;
   email: string;
-  password: string;
+  password?: string;
   role: 'admin' | 'user' | 'guest';
-  books: Partial<Book>;
+  // eslint-disable-next-line @typescript-eslint/array-type
+  book: Partial<Book>[];
 };
 
 export type AuthorCreateDto = {
