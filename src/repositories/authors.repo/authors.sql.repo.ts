@@ -9,26 +9,40 @@ import {
 
 const debug = createDebug('W6*:authorRepoSql');
 
-export class AuthorSqlRepository implements Repo<Author, AuthorCreateDto> {
+const select = {
+  id: true,
+  name: true,
+  birthDate: true,
+  email: true,
+  nacionality: true,
+  role: true,
+  books: {
+    select: {
+      id: true,
+      name: true,
+      category: true,
+      isPartOfSeries: true,
+      authorId: true,
+    },
+  },
+};
+
+export class AuthorSqlRepository
+  implements Repo<Omit<Author, 'password'>, AuthorCreateDto>
+{
   constructor(private readonly prisma: PrismaClient) {
     debug(' author sql repository');
   }
 
   async readAll() {
-    return this.prisma.author.findMany({ distinct: ['createAd', 'updateAd'] });
+    return this.prisma.author.findMany({ select });
     // CON EL DISTINCT INDICAMOS LOS CAMPOS QUE NO QUEREMOS PARA ESE METODO
   }
 
   async readById(id: string) {
     const author = await this.prisma.author.findUnique({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        birthDate: true,
-        email: true,
-        nacionality: true,
-      },
+      select,
     });
     // CON EL WHERE BUSCAMOS EL QUE CUMPLA LA CONDICION EN ESTE CASO ID = ID
     // CON EL SELECT INDICAMOS LOS CAMPOS QUE QUEREMOS Y LAS MOSTRAMOS
@@ -44,13 +58,7 @@ export class AuthorSqlRepository implements Repo<Author, AuthorCreateDto> {
   async create(data: AuthorCreateDto) {
     return this.prisma.author.create({
       data,
-      select: {
-        id: true,
-        name: true,
-        birthDate: true,
-        email: true,
-        nacionality: true,
-      },
+      select,
     });
   }
 
@@ -65,13 +73,7 @@ export class AuthorSqlRepository implements Repo<Author, AuthorCreateDto> {
     return this.prisma.author.update({
       where: { id },
       data,
-      select: {
-        id: true,
-        name: true,
-        birthDate: true,
-        email: true,
-        nacionality: true,
-      },
+      select,
     });
   }
 
@@ -85,13 +87,7 @@ export class AuthorSqlRepository implements Repo<Author, AuthorCreateDto> {
 
     return this.prisma.author.delete({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        birthDate: true,
-        email: true,
-        nacionality: true,
-      },
+      select,
     });
   }
 }

@@ -6,6 +6,7 @@ export const authorCreateDtoSchema = Joi.object<AuthorCreateDto>({
   birthDate: Joi.date().required(),
   nacionality: Joi.string().required(),
   email: Joi.string().required(),
+  password: Joi.string().required(),
 });
 
 export const authorUpdateDtoSchema = Joi.object<AuthorCreateDto>({
@@ -13,4 +14,5 @@ export const authorUpdateDtoSchema = Joi.object<AuthorCreateDto>({
   birthDate: Joi.date(),
   nacionality: Joi.string(),
   email: Joi.string(),
+  password: Joi.string(),
 });

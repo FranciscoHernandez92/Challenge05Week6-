@@ -58,6 +58,7 @@ describe('Given a instance of the class AuthorSqlRepository', () => {
         birthDate: new Date(1996, 0, 1),
         nacionality: 'nacionality',
         email: 'email@email.com',
+        password: 'password',
       });
       expect(mockPrisma.author.update).toHaveBeenCalled();
       expect(result).toEqual({});

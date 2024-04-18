@@ -30,10 +30,18 @@ model Author {
   name        String
   birthDate   DateTime
   email       String
+  password    String
   nacionality String
+  role        Role      @default(user)
   createAd    DateTime @default(now())
   updateAd    DateTime @updatedAt
   Book        Book[]
+}
+
+enum Role {
+  user
+  admin
+  guest
 }
 
 // ESTO SON LOS MODELOS DE ALEJANDRO PARA EXPLICAR LAS RELACIONES 
